@@ -3,11 +3,14 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Image;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -17,18 +20,19 @@ public class Window extends JFrame {
 	
 	/** Evitar Warning serial, generado por el IDE  */
 	private static final long serialVersionUID = 1L;
+	
 	/** Boton para elegir la imagen */
 	private JButton btnChooseImg;
 	/** Boton para pasar a la siguiente imagen */
 	private JButton btnNextImg;
 	/** Boton para aplicar el filtro de rojos */
-	private JButton btnRedFilter;
+	private JRadioButton btnRedFilter;
 	/** Boton para aplicar el filtro de verdes */
-	private JButton btnGreenFilter;
+	private JRadioButton btnGreenFilter;
 	/** Boton para aplicar el filtro de azules */
-	private JButton btnBlueFilter;
+	private JRadioButton btnBlueFilter;
 	/** Boton para aplicar el filtro HSV */
-	private JButton btnHSV;
+	private JRadioButton btnHSV;
 	/** Boton para salir */
 	private JButton btnExit;
 	/** Imagen a la que se aplicaran los filtros */
@@ -70,16 +74,22 @@ public class Window extends JFrame {
 		JPanel panelButtons = new JPanel();
 		getContentPane().add(panelButtons, BorderLayout.SOUTH);
 		
-		btnRedFilter = new JButton("Filto Rojo");
+		ButtonGroup group = new ButtonGroup();
+		
+		btnRedFilter = new JRadioButton("Filto Rojo");
+		group.add(btnRedFilter);
 		panelButtons.add(btnRedFilter);
 		
-		btnGreenFilter = new JButton("Filtro verde");
+		btnGreenFilter = new JRadioButton("Filtro verde");
+		group.add(btnGreenFilter);
 		panelButtons.add(btnGreenFilter);
 		
-		btnBlueFilter = new JButton("Filtro azul");
+		btnBlueFilter = new JRadioButton("Filtro azul");
+		group.add(btnBlueFilter);
 		panelButtons.add(btnBlueFilter);
 		
-		btnHSV = new JButton("HSV");
+		btnHSV = new JRadioButton("HSV");
+		group.add(btnHSV);
 		panelButtons.add(btnHSV);
 		
 		btnNextImg = new JButton("Sig. Imagen");

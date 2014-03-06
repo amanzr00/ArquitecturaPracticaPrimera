@@ -27,7 +27,9 @@ public class Processor {
 			try{
 				// Devuelve la img seleccionada
 				File selectedImg = selector.getSelectedFile();
+				
 				bmp = ImageIO.read(selectedImg);
+				
 			}catch(Exception e){
 				
 			}
@@ -39,9 +41,9 @@ public class Processor {
 	}
 	
 	public BufferedImage redFilter(){
-		System.out.println("caca");
+		
 		Color colorAux;
-		int pixel;
+		int pixel, colorSRGB;
 		int i = 0;
 		int j = 0;
 		// Recorremos los pixeles de la imagen uno a uno
@@ -52,12 +54,9 @@ public class Processor {
 				
 				pixel = (int) colorAux.getRed();
 				
-				if (pixel < 255){
-					//System.out.println("caca");
-					currentImg.setRGB(i, j, 0);
-				}
+				colorSRGB = pixel << 16 ;
 				
-				
+				currentImg.setRGB(i, j, colorSRGB);
 			}
 		}
 		
