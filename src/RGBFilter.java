@@ -33,17 +33,17 @@ public class RGBFilter {
 				actualRedValue = actualPixel.getRed();
 				actualGreenValue = actualPixel.getGreen();
 				actualBlueValue = actualPixel.getBlue();
-				if ((actualGreenValue < 55) && (actualBlueValue < 30)) {
-					redAverage = (redAverage + actualRedValue) / 2;					
-				}
 				if(actualRedValue < RED_MINIMUN || actualRedValue > 255 || actualGreenValue < 31 || actualGreenValue > 149 || actualBlueValue < 5 || actualBlueValue > 109){
 					//System.out.println("entro");
-				redImage.setRGB(i, j, new Color(0, 0, 0).getRGB());
+				redImage.setRGB(i, j, 0);
+				}else{
+					redAverage = (redAverage + actualRedValue) / 2;	
 				}
 			}
-			if (redAverage > RED_MINIMUN) {
-				hasTomato = true;
-			}
+			
+		}
+		if (redAverage > RED_MINIMUN) {
+			hasTomato = true;
 		}
 		return redImage;
 
@@ -63,17 +63,18 @@ public class RGBFilter {
 				actualRedValue = actualPixel.getRed();
 				actualGreenValue = actualPixel.getGreen();
 				actualBlueValue = actualPixel.getBlue();
-				if ((actualRedValue < 60) && (actualBlueValue < 60)) {
-					greenAverage = (greenAverage + actualGreenValue) / 2;
-				}
+			
 				if(actualRedValue < 20 || actualRedValue > 185 || actualGreenValue < 80 || actualGreenValue > 225 || actualBlueValue < 0 || actualBlueValue > 95){
 					//System.out.println("entro");
 					greenImage.setRGB(i, j, 0);
+				}else{
+					greenAverage = (greenAverage + actualGreenValue) / 2;
 				}
 			}
-			if (greenAverage > GREEN_MINIMUN) {
-				hasKiwi = true;
-			}
+			
+		}
+		if (greenAverage > GREEN_MINIMUN) {
+			hasKiwi = true;
 		}
 		return greenImage;
 	}
@@ -81,7 +82,8 @@ public class RGBFilter {
 	public BufferedImage yellowRGBFilter(){
 		this.yellowImage = originalImage;
 		Color firstPixel = new Color(originalImage.getRGB(0, 0));
-		float yellowAverage = (float) (firstPixel.getRed() + firstPixel.getGreen()) / 2;
+		float redAverage = (float) firstPixel.getRed();
+		float greenAverage = (float) firstPixel.getGreen();
 		Color actualPixel;
 		int actualRedValue;
 		int actualGreenValue;
@@ -92,17 +94,19 @@ public class RGBFilter {
 				actualRedValue = actualPixel.getRed();
 				actualGreenValue = actualPixel.getGreen();
 				actualBlueValue = actualPixel.getBlue();
-				if (actualBlueValue < 100) {
-					yellowAverage = (yellowAverage + (actualRedValue + actualGreenValue) / 2) / 2;
-				}
+				
 				if(actualRedValue < 210 || actualRedValue > 250 || actualGreenValue < 110 || actualGreenValue > 225 || actualBlueValue < 0 || actualBlueValue > 80){
 					//System.out.println("entro");
 					yellowImage.setRGB(i, j, 0);
-				}}
+				}else{
+					greenAverage = (greenAverage + actualGreenValue) / 2;
+					redAverage = (redAverage + actualRedValue) / 2;	
+				}
+			}
 		}
-		if (yellowAverage > YELLOW_MINIMUN) {
+		
 			hasBanana = true;
-		}
+		
 		return yellowImage;
 	}
 }
