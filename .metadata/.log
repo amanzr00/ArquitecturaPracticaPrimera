@@ -1,0 +1,9 @@
+!SESSION 2014-03-16 16:44:53.724 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_03
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=es_ES
+Command-line arguments:  -data C:\Users\Alberto\Documents\GitHub\ArquitecturaPracticaPrimera -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.ui 4 4 2014-03-16 16:45:31.559
+!MESSAGE Invalid preference page path: XML Syntax

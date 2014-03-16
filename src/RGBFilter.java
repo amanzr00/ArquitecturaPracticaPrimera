@@ -2,9 +2,9 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 public class RGBFilter {
-	private static final float RED_MINIMUN = 150;
-	private static final float GREEN_MINIMUN = 200;
-	private static final float YELLOW_MINIMUN = 200;
+	private static final float RED_MINIMUN = 0.20f;
+	private static final float GREEN_MINIMUN = 0.20f;
+	private static final float YELLOW_MINIMUN = 0.10f;
 
 	private BufferedImage originalImage;
 	private BufferedImage redImage;
@@ -21,12 +21,11 @@ public class RGBFilter {
 
 	public BufferedImage redRGBFilter() {
 		this.redImage = originalImage;
-		Color firstPixel = new Color(originalImage.getRGB(0, 0));
-		float redAverage = (float) firstPixel.getRed();
 		Color actualPixel;
 		int actualRedValue;
 		int actualGreenValue;
 		int actualBlueValue;
+		float numberOfRedPixels = 0f;
 		for (int i = 0; i < originalImage.getWidth(); i++) {
 			for (int j = 0; j < originalImage.getHeight(); j++) {
 				actualPixel = new Color(originalImage.getRGB(i, j));
@@ -35,15 +34,18 @@ public class RGBFilter {
 				actualBlueValue = actualPixel.getBlue();
 				if(actualRedValue < RED_MINIMUN || actualRedValue > 255 || actualGreenValue < 31 || actualGreenValue > 149 || actualBlueValue < 5 || actualBlueValue > 109){
 					//System.out.println("entro");
-				redImage.setRGB(i, j, 0);
+					redImage.setRGB(i, j, 0);
+					
 				}else{
-					redAverage = (redAverage + actualRedValue) / 2;	
+					numberOfRedPixels++;
 				}
 			}
-			
 		}
-		if (redAverage > RED_MINIMUN) {
+		float numberOfPixels = originalImage.getTileHeight() * originalImage.getTileWidth();
+		if ((numberOfRedPixels / numberOfPixels)> RED_MINIMUN) {
 			hasTomato = true;
+		}else{
+			hasTomato = false;
 		}
 		return redImage;
 
@@ -51,12 +53,11 @@ public class RGBFilter {
 
 	public BufferedImage greenRGBFilter() {
 		this.greenImage = originalImage;
-		Color firstPixel = new Color(originalImage.getRGB(0, 0));
-		float greenAverage = (float) firstPixel.getGreen();
 		Color actualPixel;
 		int actualRedValue;
 		int actualGreenValue;
 		int actualBlueValue;
+		float numberOfGreenPixels = 0f;
 		for (int i = 0; i < originalImage.getWidth(); i++) {
 			for (int j = 0; j < originalImage.getHeight(); j++) {
 				actualPixel = new Color(originalImage.getRGB(i, j));
@@ -68,26 +69,26 @@ public class RGBFilter {
 					//System.out.println("entro");
 					greenImage.setRGB(i, j, 0);
 				}else{
-					greenAverage = (greenAverage + actualGreenValue) / 2;
+					numberOfGreenPixels++;
 				}
 			}
-			
 		}
-		if (greenAverage > GREEN_MINIMUN) {
+		float numberOfPixels = originalImage.getTileHeight() * originalImage.getTileWidth();
+		if ((numberOfGreenPixels / numberOfPixels) > GREEN_MINIMUN) {
 			hasKiwi = true;
+		}else{
+			hasKiwi = false;
 		}
 		return greenImage;
 	}
 	
 	public BufferedImage yellowRGBFilter(){
 		this.yellowImage = originalImage;
-		Color firstPixel = new Color(originalImage.getRGB(0, 0));
-		float redAverage = (float) firstPixel.getRed();
-		float greenAverage = (float) firstPixel.getGreen();
 		Color actualPixel;
 		int actualRedValue;
 		int actualGreenValue;
 		int actualBlueValue;
+		float numberOfYellowPixels = 0f;
 		for (int i = 0; i < originalImage.getWidth(); i++) {
 			for (int j = 0; j < originalImage.getHeight(); j++) {
 				actualPixel = new Color(originalImage.getRGB(i, j));
@@ -99,14 +100,25 @@ public class RGBFilter {
 					//System.out.println("entro");
 					yellowImage.setRGB(i, j, 0);
 				}else{
-					greenAverage = (greenAverage + actualGreenValue) / 2;
-					redAverage = (redAverage + actualRedValue) / 2;	
+					numberOfYellowPixels++;
 				}
 			}
 		}
-		
+		float numberOfPixels = originalImage.getTileHeight() * originalImage.getTileWidth();
+		if ((numberOfYellowPixels / numberOfPixels) > YELLOW_MINIMUN) {
 			hasBanana = true;
-		
+		}else{
+			hasBanana = false;
+		}
 		return yellowImage;
+	}
+	public boolean hasTomato(){
+		return hasTomato;
+	}
+	public boolean hasBanana(){
+		return hasBanana;
+	}
+	public boolean hasKiwi(){
+		return hasKiwi;
 	}
 }

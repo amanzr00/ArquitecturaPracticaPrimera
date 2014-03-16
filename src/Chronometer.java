@@ -64,7 +64,7 @@ public class Chronometer {
 	
 	@Override
 	public String toString(){
-		return ""+timeChorometred+" ms";
+		return ""+timeChorometred / ((float)1000)+" s";
 		
 	}
 }

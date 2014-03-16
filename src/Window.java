@@ -4,16 +4,13 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,10 +53,11 @@ public class Window extends JFrame {
 	private int count;
 	private int heightImage = 450;
 	private int widthImage = 800;
-	private boolean greenDetected, redDetected, yellowDetected;
 	private Chronometer chronometer;
-	RGBFilter rgbFilter, rgbGreen, rgbYellow;
-	HSVFilter hsvRed, hsvGreen, hsvYellow;
+	private ButtonGroup group;
+	private File[] myImages;
+	RGBFilter rgbFilter;
+	HSVFilter hsvFilter;
 	/**
 	 * Launch the application.
 	 */
@@ -94,7 +92,8 @@ public class Window extends JFrame {
 		// Create a chronometer
 		chronometer = new Chronometer();
 		// Initialize count (to open the first image)
-		count = 1;
+		count = 0;
+		loadImages();
 		// Add menu to the panel
 		setMenu();
 		// JPanel where image will be placed
@@ -141,48 +140,21 @@ public class Window extends JFrame {
 	 * @throws IOException
 	 */
 	public void setImage() throws IOException {
-		String path;
-		File archive;
-		BufferedImage img;
-		switch (count) {
-		case 1:
-			// Search the archive in the directory
-			archive = new File(System.getProperty("user.dir") + "/1.jpeg");
-			// Take the path
-			path = archive.getPath();
-			// Read image
-			img = ImageIO.read(new File(path));
-			// Save de img in a BufferedImage
-			originalImage = img;
-			// Resize the image
-			adjustImage(originalImage);
-			// Refresh the label with the new image
-			imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
-					widthImage, heightImage, Image.SCALE_DEFAULT)));
-			// Refresh the count
-			count++;
-			break;
-		case 2:
-			archive = new File(System.getProperty("user.dir") + "/2.jpeg");
-			path = archive.getPath();
-			img = ImageIO.read(new File(path));
-			originalImage = img;
-			adjustImage(originalImage);
-			imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
-					widthImage, heightImage, Image.SCALE_DEFAULT)));
-			count++;
-			break;
-		case 3:
-			archive = new File(System.getProperty("user.dir") + "/3.jpeg");
-			path = archive.getPath();
-			img = ImageIO.read(new File(path));
-			originalImage = img;
-			adjustImage(originalImage);
-			imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
-					widthImage, heightImage, Image.SCALE_DEFAULT)));
-			count = 1;
-			break;
+		if(count >= myImages.length){
+			count = 0;
 		}
+		// Read image
+		BufferedImage image = ImageIO.read(myImages[count]);
+		// Save de img in a BufferedImage
+		originalImage = image;
+		// Resize the image
+		adjustImage(originalImage);
+		// Refresh the label with the new image
+		imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
+				widthImage, heightImage, Image.SCALE_DEFAULT)));
+		// Refresh the count
+		count++;
+		
 
 	}
 
@@ -326,7 +298,7 @@ public class Window extends JFrame {
 		// Code of ButtonGroup take out of practice last year
 		// This group avoids that two or more buttons can be selected at the
 		// same time
-		ButtonGroup group = new ButtonGroup();
+		group = new ButtonGroup();
 		group.add(buttonRGBRed);
 		group.add(buttonRGBYellow);
 		group.add(buttonRGBGreen);
@@ -358,7 +330,7 @@ public class Window extends JFrame {
 		cons.gridx = 6;
 		time = new JTextField();
 		time.setEditable(false);
-		time.setText("000000ms");
+		time.setText("000000s");
 		panelOptions.add(time, cons);
 
 	}
@@ -394,20 +366,20 @@ public class Window extends JFrame {
 	 */
 	public void fruitsDetected(int fruit) {
 		switch (fruit) {
+		case 0:
+			JOptionPane.showMessageDialog(this, "There is not fruits","Not fruit", JOptionPane.INFORMATION_MESSAGE);
+			break;
 		case 1:
 			JOptionPane.showMessageDialog(this, "Kiwis are been detected",
 					"Kiwis - Green", JOptionPane.INFORMATION_MESSAGE);
-			greenDetected = false;
 			break;
 		case 2:
 			JOptionPane.showMessageDialog(this, "Tomatoes are been detected",
 					"Tomato - Red", JOptionPane.INFORMATION_MESSAGE);
-			redDetected = false;
 			break;
 		case 3:
 			JOptionPane.showMessageDialog(this, "Lemons are been detected",
 					"Lemnos - Yellow", JOptionPane.INFORMATION_MESSAGE);
-			yellowDetected = false;
 			break;
 		}
 
@@ -441,11 +413,16 @@ public class Window extends JFrame {
 				imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
 						widthImage, heightImage, Image.SCALE_DEFAULT)));
 				System.out.println("RGB red filter applied.");
+				if(rgbFilter.hasTomato()){
+					fruitsDetected(2);
+				}else{
+					fruitsDetected(0);
+				}
 			}
 			if (buttonRGBGreen.isSelected()) {
-				rgbGreen = new RGBFilter(originalImage);
+				rgbFilter = new RGBFilter(originalImage);
 				chronometer.activate();
-				originalImage = rgbGreen.greenRGBFilter();
+				originalImage = rgbFilter.greenRGBFilter();
 				chronometer.stop();
 				chronometer.read();
 				time.setText(chronometer.toString());
@@ -454,11 +431,16 @@ public class Window extends JFrame {
 				imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
 						widthImage, heightImage, Image.SCALE_DEFAULT)));
 				System.out.println("RGB green filter applied");
+				if(rgbFilter.hasKiwi()){
+					fruitsDetected(1);
+				}else{
+					fruitsDetected(0);
+				}
 			}
 			if (buttonRGBYellow.isSelected()) {
-				rgbYellow = new RGBFilter(originalImage);
+				rgbFilter = new RGBFilter(originalImage);
 				chronometer.activate();
-				originalImage = rgbYellow.yellowRGBFilter();
+				originalImage = rgbFilter.yellowRGBFilter();
 				chronometer.stop();
 				chronometer.read();
 				time.setText(chronometer.toString());
@@ -467,11 +449,16 @@ public class Window extends JFrame {
 				imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
 						widthImage, heightImage, Image.SCALE_DEFAULT)));
 				System.out.println("RGB Yellow filter applied");
+				if(rgbFilter.hasBanana()){
+					fruitsDetected(3);
+				}else{
+					fruitsDetected(0);
+				}
 			}
 			if (buttonHSVRed.isSelected()) {
-				hsvRed = new HSVFilter(originalImage);
+				hsvFilter = new HSVFilter(originalImage);
 				chronometer.activate();
-				originalImage = hsvRed.redHSVFilter();
+				originalImage = hsvFilter.redHSVFilter();
 				chronometer.stop();
 				chronometer.read();
 				time.setText(chronometer.toString());
@@ -482,9 +469,9 @@ public class Window extends JFrame {
 				System.out.println("HSV Red filter applied");
 			}
 			if (buttonHSVGreen.isSelected()) {
-				hsvGreen = new HSVFilter(originalImage);
+				hsvFilter = new HSVFilter(originalImage);
 				chronometer.activate();
-				originalImage = hsvGreen.greenHSVFilter();
+				originalImage = hsvFilter.greenHSVFilter();
 				chronometer.stop();
 				chronometer.read();
 				time.setText(chronometer.toString());
@@ -495,9 +482,9 @@ public class Window extends JFrame {
 				System.out.println("HSV Green filter applied");
 			}
 			if (buttonHSVYellow.isSelected()) {
-				hsvYellow = new HSVFilter(originalImage);
+				hsvFilter = new HSVFilter(originalImage);
 				chronometer.activate();
-				originalImage = hsvYellow.yellowHSVFilter();
+				originalImage = hsvFilter.yellowHSVFilter();
 				chronometer.stop();
 				chronometer.read();
 				time.setText(chronometer.toString());
@@ -523,9 +510,13 @@ public class Window extends JFrame {
 				count--;
 			try {
 				setImage();
+				resetButtons();
 				
 			} catch (IOException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(getContentPane(),
+						"The image was not able to restore", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 			JOptionPane.showMessageDialog(getContentPane(),
@@ -538,15 +529,16 @@ public class Window extends JFrame {
 	 * Method that reset the JRadioButtons to their default value (false)
 	 */
 	public void resetButtons() {
+		time.setText("000000 s");
+		group.clearSelection();
 		
-		if (buttonRGBRed.isSelected()) buttonRGBRed.setSelected(false);
-		/*if (buttonRGBGreen.isSelected()) buttonRGBGreen.setSelected(false);
-		if (buttonRGBYellow.isSelected()) buttonRGBYellow.setSelected(false);
-		if (buttonHSVRed.isSelected()) buttonHSVRed.setSelected(false);
-		if (buttonHSVGreen.isSelected()) buttonHSVGreen.setSelected(false);
-		if (buttonHSVYellow.isSelected()) buttonHSVYellow.setSelected(false);
-		if (buttonYUVRed.isSelected()) buttonYUVRed.setSelected(false);
-		if (buttonYUVGreen.isSelected()) buttonYUVGreen.setSelected(false);
-		if (buttonYUVYellow.isSelected()) buttonYUVYellow.setSelected(false);*/
+	}
+	
+	/**
+	 * Method that load the images
+	 */
+	public void loadImages(){
+		File folder = new File(System.getProperty("user.dir") + "/Images");
+		myImages = folder.listFiles();
 	}
 }
