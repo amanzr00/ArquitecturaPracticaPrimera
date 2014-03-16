@@ -58,8 +58,8 @@ public class Window extends JFrame {
 	private int widthImage = 800;
 	private boolean greenDetected, redDetected, yellowDetected;
 	private Chronometer chronometer;
-	RGBFilter redFilter, greenFilter, yellowFilter;
-
+	RGBFilter rgbFilter, rgbGreen, rgbYellow;
+	HSVFilter hsvRed, hsvGreen, hsvYellow;
 	/**
 	 * Launch the application.
 	 */
@@ -423,11 +423,11 @@ public class Window extends JFrame {
 			if (buttonRGBRed.isSelected()) {
 				// call to the class RGBFilter (lo podemos poner en la funcion
 				// principal para no tener que llamarlo todas las veces)
-				redFilter = new RGBFilter(originalImage);
+				rgbFilter = new RGBFilter(originalImage);
 				// chronometer star to run
 				chronometer.activate();
 				// Apply the filter to the image
-				originalImage = redFilter.redRGBFilter();
+				originalImage = rgbFilter.redRGBFilter();
 				// once the filter is finished, the chronometer stops
 				chronometer.stop();
 				// read the time
@@ -443,9 +443,9 @@ public class Window extends JFrame {
 				System.out.println("RGB red filter applied.");
 			}
 			if (buttonRGBGreen.isSelected()) {
-				greenFilter = new RGBFilter(originalImage);
+				rgbGreen = new RGBFilter(originalImage);
 				chronometer.activate();
-				originalImage = greenFilter.greenRGBFilter();
+				originalImage = rgbGreen.greenRGBFilter();
 				chronometer.stop();
 				chronometer.read();
 				time.setText(chronometer.toString());
@@ -456,9 +456,9 @@ public class Window extends JFrame {
 				System.out.println("RGB green filter applied");
 			}
 			if (buttonRGBYellow.isSelected()) {
-				yellowFilter = new RGBFilter(originalImage);
+				rgbYellow = new RGBFilter(originalImage);
 				chronometer.activate();
-				originalImage = yellowFilter.yellowRGBFilter();
+				originalImage = rgbYellow.yellowRGBFilter();
 				chronometer.stop();
 				chronometer.read();
 				time.setText(chronometer.toString());
@@ -469,12 +469,42 @@ public class Window extends JFrame {
 				System.out.println("RGB Yellow filter applied");
 			}
 			if (buttonHSVRed.isSelected()) {
+				hsvRed = new HSVFilter(originalImage);
+				chronometer.activate();
+				originalImage = hsvRed.redHSVFilter();
+				chronometer.stop();
+				chronometer.read();
+				time.setText(chronometer.toString());
+				chronometer.reset();
+				adjustImage(originalImage);
+				imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
+						widthImage, heightImage, Image.SCALE_DEFAULT)));
 				System.out.println("HSV Red filter applied");
 			}
 			if (buttonHSVGreen.isSelected()) {
+				hsvGreen = new HSVFilter(originalImage);
+				chronometer.activate();
+				originalImage = hsvGreen.greenHSVFilter();
+				chronometer.stop();
+				chronometer.read();
+				time.setText(chronometer.toString());
+				chronometer.reset();
+				adjustImage(originalImage);
+				imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
+						widthImage, heightImage, Image.SCALE_DEFAULT)));
 				System.out.println("HSV Green filter applied");
 			}
 			if (buttonHSVYellow.isSelected()) {
+				hsvYellow = new HSVFilter(originalImage);
+				chronometer.activate();
+				originalImage = hsvYellow.yellowHSVFilter();
+				chronometer.stop();
+				chronometer.read();
+				time.setText(chronometer.toString());
+				chronometer.reset();
+				adjustImage(originalImage);
+				imageJPG.setIcon(new ImageIcon(originalImage.getScaledInstance(
+						widthImage, heightImage, Image.SCALE_DEFAULT)));
 				System.out.println("HSV Yellow filter applied");
 			}
 		}
